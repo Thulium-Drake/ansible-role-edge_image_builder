@@ -1,13 +1,13 @@
 # {{ ansible_managed }}
 check_gpg = {{ repo['check_gpg'] | to_json }}
 check_ssl = {{ repo['check_ssl'] | to_json }}
-id = "{{ repo['id'] }}"
-name = "{{ repo['name'] }}"
-type = "{{ repo['type'] }}"
-url = "{{ repo['url'] }}"
+id = {{ repo['id'] | to_json }}
+name = {{ repo['name'] | to_json }}
+type = {{ repo['type'] | to_json }}
+url = {{ repo['url'] | to_json }}
 rhsm = {{ repo['rhsm'] | to_json }}
 
 {% if repo['gpgkeys'] is defined %}
 check_repogpg = true
-gpgkeys = repo['gpgkeys']
+gpgkeys = {{ repo['gpgkeys'] }}
 {% endif %}
