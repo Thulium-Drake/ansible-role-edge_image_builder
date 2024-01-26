@@ -1,0 +1,20 @@
+---
+# BaseURL for used repositories
+edge_image_builder_repo_baseurl: 'https://cdn.redhat.com'
+
+# When the system is used with on-premise Satellite
+# URL for Satellite with the ContentView that should be used
+# NOTE: the system must be subscribed to this ContentView!
+# edge_image_builder_repo_baseurl: 'https://satellite.exemple.com/pulp/repos/ExampleOrg/ExampleLCE/ContentView'
+
+# Extra repositories to add to osbuild-composer
+edge_image_builder_repos:
+  - id: 'example-repo'
+    name: 'Example repo'
+    type: 'yum-baseurl'
+    url: 'https://example.com/yum'
+    distros:
+      - 'rhel-9'  # You can also use {{ edge_image_builder_distro_id }}
+    check_gpg: true
+    check_ssl: true
+    rhsm: false

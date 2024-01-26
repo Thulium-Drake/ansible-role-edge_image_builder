@@ -1,0 +1,66 @@
+---
+- name: 'Assert supported system'
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['os_family'] == 'RedHat'
+
+- name: 'Ensure dependencies'
+  ansible.builtin.package:
+    name:
+      - 'osbuild-composer'
+      - 'composer-cli'
+    state: 'present'
+  notify: 'Reboot system'
+
+- name: 'Ensure services'
+  ansible.builtin.service:
+    name: 'osbuild-composer.socket'
+    state: 'started'
+    enabled: true
+
+- name: 'Get distro ID'
+  ansible.builtin.shell: |
+    set -o pipefail
+    . /etc/os-release
+    echo $ID
+  register: 'edge_image_builder_distro_id_raw'
+  changed_when: false
+
+- name: 'Set fact for distro ID'
+  ansible.builtin.set_fact:
+    edge_image_builder_distro_id: "{{ edge_image_builder_distro_id_raw['stdout'] }}-{{ ansible_facts['distribution_major_version'] }}"
+
+- name: 'Ensure directory'
+  ansible.builtin.file:
+    path: '/etc/osbuild-composer/repositories'
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+
+- name: 'Ensure default repository overrides'
+  ansible.builtin.template:
+    src: "{{ edge_image_builder_distro_id }}.json.j2"
+    dest: "/etc/osbuild-composer/repositories/{{ edge_image_builder_distro_id }}.json"
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  notify: 'Restart osbuild-composer'
+
+- name: 'Ensure extra repo definitions'
+  ansible.builtin.template:
+    src: 'osbuild-composer-repo.toml.j2'
+    dest: "/etc/osbuild-composer/repositories/{{ repo['id'] }}.toml"
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  loop: "{{ edge_image_builder_repos }}"
+  loop_control:
+    loop_var: 'repo'
+
+- name: 'Import extra repo definitions'
+  ansible.builtin.command: /usr/bin/composer-cli sources add /etc/osbuild-composer/repositories/{{ repo['id'] }}.toml
+  changed_when: true  # The command does not tell you if anything has changed
+  loop: "{{ edge_image_builder_repos }}"
+  loop_control:
+    loop_var: 'repo'

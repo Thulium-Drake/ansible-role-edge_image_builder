@@ -1,0 +1,28 @@
+---
+- name: 'Build edge-commit images from blueprints'
+  hosts: 'edge_image_builder'
+  gather_facts: false
+  tasks:
+    - name: 'Make list of blueprint files'
+      ansible.builtin.find:
+        paths: '/etc/osbuild-composer/blueprints'
+      register: 'edge_blueprints'
+
+    - name: 'Import blueprints to OSBuild'
+      ansible.builtin.command: /usr/bin/composer-cli blueprints push {{ blueprint['path'] }}
+      loop: "{{ edge_blueprints['files'] }}"
+      loop_control:
+        loop_var: 'blueprint'
+      changed_when: true  # Command does not tell you when something has changed
+
+    - name: 'List available blueprints'
+      ansible.builtin.command: /usr/bin/composer-cli blueprints list
+      register: 'osbuild_blueprints'
+      changed_when: false
+
+    - name: 'Start build job for all blueprints'
+      ansible.builtin.command: /usr/bin/composer-cli compose start {{ blueprint }} edge-commit
+      loop: "{{ osbuild_blueprints['stdout_lines'] }}"
+      loop_control:
+        loop_var: 'blueprint'
+      changed_when: true  # Command always starts a build
