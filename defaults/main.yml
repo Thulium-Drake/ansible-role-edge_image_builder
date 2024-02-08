@@ -9,12 +9,12 @@ edge_image_builder_repo_baseurl: 'https://cdn.redhat.com'
 
 # Extra repositories to add to osbuild-composer
 edge_image_builder_repos:
-  - id: 'example-repo'
-    name: 'Example repo'
-    type: 'yum-baseurl'
-    url: 'https://example.com/yum'
+  - id: 'example-repo'              # Name of the repo
+    name: 'Example repo'            # Description
+    type: 'yum-baseurl'             # yum-baseurl or yum-mirrorlist
+    url: 'https://example.com/yum'  # Actual URL for repo
     distros:
       - 'rhel-9'  # You can also use {{ edge_image_builder_distro_id }}
-    check_gpg: true
-    check_ssl: true
-    rhsm: false
+    check_gpg: true                 # Check GPG signatures for packages in repo
+    check_ssl: true                 # Check if repo has valid SSL settings
+    rhsm: false                     # True if the repo is hosted on a RHSM managed source
