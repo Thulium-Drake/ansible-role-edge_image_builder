@@ -9,14 +9,18 @@
     name:
       - 'osbuild-composer'
       - 'composer-cli'
+      - 'httpd'
     state: 'present'
   notify: 'Reboot system'
 
 - name: 'Ensure services'
   ansible.builtin.service:
-    name: 'osbuild-composer.socket'
+    name: "{{ service }}"
     state: 'started'
     enabled: true
+  loop:
+    - 'osbuild-composer.socket'
+    - 'httpd.service'
 
 - name: 'Get distro ID'
   ansible.builtin.shell: |
