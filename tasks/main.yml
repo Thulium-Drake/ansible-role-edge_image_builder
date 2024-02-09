@@ -36,13 +36,16 @@
   ansible.builtin.set_fact:
     edge_image_builder_distro_id: "{{ edge_image_builder_distro_id_raw['stdout'] }}-{{ ansible_facts['distribution_major_version'] }}"
 
-- name: 'Ensure directory'
+- name: 'Ensure directories'
   ansible.builtin.file:
-    path: '/etc/osbuild-composer/repositories'
+    path: "{{ directory }}"
     state: 'directory'
     owner: 'root'
     group: 'root'
     mode: '0755'
+  loop:
+    - '/etc/osbuild-composer/repositories'
+    - '/etc/osbuild-composer/blueprints'
 
 - name: 'Ensure default repository overrides'
   ansible.builtin.template:
