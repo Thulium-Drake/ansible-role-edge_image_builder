@@ -1,0 +1,43 @@
+# {{ ansible_managed }}
+# This config file provides a basic DHCP setup for deploying Device Edge
+# It assumes it has full control of the subnet it's attached to!
+default-lease-time 43200;
+max-lease-time 86400;
+
+not authoritative;
+
+ddns-update-style none;
+option ntp-servers none;
+option domain-name-servers {{ edge_image_builder_nameservers }};
+option domain-name "{{ edge_image_builder_domain }}";
+
+allow booting;
+allow bootp;
+
+option fqdn.no-client-update    on;  # set the "O" and "S" flag bits
+option fqdn.rcode2            255;
+option pxegrub code 150 = text ;
+
+log-facility local7;
+
+next-server {{ edge_image_builder_server_ip }};
+option architecture code 93 = unsigned integer 16 ;
+if option architecture = 00:06 {
+  filename "grub2/shim.efi";
+} elsif option architecture = 00:07 {
+  filename "grub2/shim.efi";
+} elsif option architecture = 00:09 {
+  filename "grub2/shim.efi";
+} else {
+  filename "pxelinux.0";
+}
+
+subnet {{ edge_image_builder_subnet | ansible.utils.ipaddr('network') }} netmask {{ edge_image_builder_subnet | ansible.utils.ipaddr('netmask') }} {
+  pool
+  {
+    range {{ edge_image_builder_subnet | ansible.utils.ipaddr('net') | ansible.utils.ipaddr('20') | ansible.utils.ipaddr('address') }} {{ edge_image_builder_subnet | ansible.utils.ipaddr('net') | ansible.utils.ipaddr('50') | ansible.utils.ipaddr('address') }};
+  }
+
+  option subnet-mask {{ edge_image_builder_subnet | ansible.utils.ipaddr('netmask') }};
+  option routers {{ edge_image_builder_router }};
+}

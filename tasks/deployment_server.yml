@@ -1,0 +1,48 @@
+---
+- name: 'Ensure packages'
+  ansible.builtin.package:
+    name:
+      - 'dhcp-server'
+      - 'tftp-server'
+      - 'syslinux'
+    state: 'present'
+
+- name: 'Ensure configuration files'
+  ansible.builtin.template:
+    src: "{{ config['src'] }}"
+    dest: "{{ config['dest'] }}"
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  loop:
+    - src: 'dhcpd.conf.j2'
+      dest: '/etc/dhcp/dhcpd.conf'
+  loop_control:
+    loop_var: 'config'
+
+- name: 'Ensure bootloader files'
+  ansible.builtin.copy:
+    src: "/usr/share/syslinux/{{ bootloader }}"
+    dest: "/var/lib/tftpboot/{{ bootloader }}"
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+    remote_src: true
+  loop:
+    - 'ldlinux.c32'
+    - 'libutil.c32'
+    - 'menu.c32'
+    - 'pxelinux.0'
+  loop_control:
+    loop_var: 'bootloader'
+
+- name: 'Ensure services'
+  ansible.builtin.service:
+    name: "{{ service }}"
+    state: 'started'
+    enabled: true
+  loop:
+    - 'dhcpd'
+    - 'tftp'
+  loop_control:
+    loop_var: 'service'

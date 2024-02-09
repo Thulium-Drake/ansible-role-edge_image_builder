@@ -18,3 +18,21 @@ edge_image_builder_repos:
     check_gpg: true                 # Check GPG signatures for packages in repo
     check_ssl: true                 # Check if repo has valid SSL settings
     rhsm: false                     # True if the repo is hosted on a RHSM managed source
+
+
+### Deployment server
+# The following variables are used to configure a simple DHCP/TFTP setup
+# which can be used to deploy a server that can PXEboot target devices for
+# the images built by this server
+#
+# NOTE: It assumes it has complete control over the subnet it's connected to!
+#
+# * The DHCP range is configured from <subnet>.20 to <subnet>.50
+# * The PXELinux config file needs to be generated manually, see the examples
+#   directory for more information
+edge_image_builder_deployment_server: false
+edge_image_builder_domain: 'edge.example.nl'
+edge_image_builder_nameservers: '8.8.8.8'
+edge_image_builder_subnet: '192.168.1.0/24'
+edge_image_builder_router: '192.168.1.1'
+edge_image_builder_server_ip: '192.168.1.10'

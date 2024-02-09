@@ -21,6 +21,8 @@
   loop:
     - 'osbuild-composer.socket'
     - 'httpd.service'
+  loop_control:
+    loop_var: 'service'
 
 - name: 'Get distro ID'
   ansible.builtin.shell: |
@@ -68,3 +70,7 @@
   loop: "{{ edge_image_builder_repos }}"
   loop_control:
     loop_var: 'repo'
+
+- name: 'Configure deployment server'
+  ansible.builtin.include_tasks: 'tasks/deployment_server.yml'
+  when: edge_image_builder_deployment_server | bool
