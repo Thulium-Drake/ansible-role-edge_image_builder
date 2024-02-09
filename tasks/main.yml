@@ -46,6 +46,28 @@
   loop:
     - '/etc/osbuild-composer/repositories'
     - '/etc/osbuild-composer/blueprints'
+    - '/etc/osbuild-worker'
+  loop_control:
+    loop_var: 'directory'
+
+- name: 'Ensure Pullsecret for osbuild-worker'
+  when: edge_image_builder_pull_secret | length > 0
+  notify: 'Reboot system'
+  block:
+    - name: 'Configure pull-secret.json'
+      ansible.builtin.copy:
+        content: "{{ edge_image_builder_pull_secret }}"
+        dest: '/etc/osbuild-worker/pull-secret.json'
+        owner: 'root'
+        group: 'root'
+        mode: '0600'
+    - name: 'Configure osbuild-worker'
+      ansible.builtin.template:
+        src: 'osbuild-worker.toml.j2'
+        dest: '/etc/osbuild-worker/osbuild-worker.toml'
+        owner: 'root'
+        group: 'root'
+        mode: '0644'
 
 - name: 'Ensure default repository overrides'
   ansible.builtin.template:

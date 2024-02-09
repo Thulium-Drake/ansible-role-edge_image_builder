@@ -7,6 +7,10 @@ edge_image_builder_repo_baseurl: 'https://cdn.redhat.com'
 # NOTE: the system must be subscribed to this ContentView!
 # edge_image_builder_repo_baseurl: 'https://satellite.exemple.com/pulp/repos/ExampleOrg/ExampleLCE/ContentView'
 
+# JSON formatted text with your Pull secrets to authenticate to container registries
+# For Red Hat OCP, get it at https://cloud.redhat.com/openshift/install/pull-secret
+edge_image_builder_pull_secret: ''
+
 # Extra repositories to add to osbuild-composer
 edge_image_builder_repos:
   - id: 'example-repo'              # Name of the repo
