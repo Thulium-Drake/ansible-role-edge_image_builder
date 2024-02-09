@@ -47,6 +47,7 @@
     - '/etc/osbuild-composer/repositories'
     - '/etc/osbuild-composer/blueprints'
     - '/etc/osbuild-worker'
+    - '/var/lib/tftpboot/pxelinux.cfg'
   loop_control:
     loop_var: 'directory'
 
