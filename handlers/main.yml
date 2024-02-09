@@ -6,3 +6,8 @@
   ansible.builtin.service:
     name: 'osbuild-composer.service'
     state: 'restarted'
+
+- name: 'Restart dhcpd'
+  ansible.builtin.service:
+    name: 'dhcpd'
+    state: 'restarted'

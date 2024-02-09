@@ -14,9 +14,11 @@
     owner: 'root'
     group: 'root'
     mode: '0644'
+  notify: "{{ config['notify'] }}"
   loop:
     - src: 'dhcpd.conf.j2'
       dest: '/etc/dhcp/dhcpd.conf'
+      notify: 'Restart dhcpd'
   loop_control:
     loop_var: 'config'
 
@@ -35,6 +37,23 @@
     - 'pxelinux.0'
   loop_control:
     loop_var: 'bootloader'
+
+- name: 'Download Boot ISO'
+  ansible.builtin.get_url:
+    url: "{{ edge_image_builder_bootiso_download }}"
+    dest: '/var/cache/osbuild-composer/boot.iso'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+
+- name: 'Extract boot images from ISO'
+  community.general.iso_extract:
+    image: '/var/cache/osbuild-composer/boot.iso'
+    dest: '/var/www/html'
+    files:
+      - 'images/install.img'
+      - 'images/pxeboot/initrd.img'
+      - 'images/pxeboot/vmlinuz'
 
 - name: 'Ensure services'
   ansible.builtin.service:
