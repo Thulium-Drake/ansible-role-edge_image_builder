@@ -23,6 +23,12 @@ edge_image_builder_repos:
     check_ssl: true                 # Check if repo has valid SSL settings
     rhsm: false                     # True if the repo is hosted on a RHSM managed source
 
+### Build blueprints
+# Set to true if you automatically want to build all blueprints found in /etc/osbuild-composer/blueprints
+# NOTE: this role will not generate blueprint files itself, place them in this location to have them built.
+# NOTE: you might not want to do this every run of Ansible when scheduled regularily
+# NOTE: Kickstart files for the blueprints must be named <blueprint name>.ks, e.g. microshift.ks and microshift.toml
+edge_image_builder_make_blueprints: false
 
 ### Deployment server
 # The following variables are used to configure a simple DHCP/TFTP setup
