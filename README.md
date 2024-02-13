@@ -24,3 +24,5 @@ This role can be configured to build and publish all blueprints found in ''/etc/
   * <image>.ks: the kickstart file which will be used to deploy the image
 
 If these files are both present, the role will import the blueprint to osbuild-composer, build the image and publish the artifacts in ''/var/www/html/<image>'', after which is can be deployed to target systems.
+
+It will also generate a PXEboot menu for the images it has built, if you do not configure the role to process blueprints, it will not generate a menu.

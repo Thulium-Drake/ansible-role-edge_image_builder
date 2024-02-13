@@ -13,6 +13,19 @@
     state: 'present'
   notify: 'Reboot system'
 
+- name: 'Ensure firewall ports'
+  ansible.posix.firewalld:
+    service: "{{ firewall_service }}"
+    permanent: true
+    immediate: true
+    state: 'enabled'
+  loop:
+    - 'dhcp'
+    - 'tftp'
+    - 'http'
+  loop_control:
+    loop_var: 'firewall_service'
+
 - name: 'Ensure services'
   ansible.builtin.service:
     name: "{{ service }}"
