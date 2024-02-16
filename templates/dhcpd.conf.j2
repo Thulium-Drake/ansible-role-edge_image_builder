@@ -23,11 +23,11 @@ log-facility local7;
 next-server {{ edge_image_builder_server_ip }};
 option architecture code 93 = unsigned integer 16 ;
 if option architecture = 00:06 {
-  filename "grub2/shim.efi";
+  filename "shim.efi";
 } elsif option architecture = 00:07 {
-  filename "grub2/shim.efi";
+  filename "shim.efi";
 } elsif option architecture = 00:09 {
-  filename "grub2/shim.efi";
+  filename "shim.efi";
 } else {
   filename "pxelinux.0";
 }

@@ -137,8 +137,13 @@
 
     - name: 'Update PXEboot menu'
       ansible.builtin.template:
-        src: 'pxelinux.cfg.j2'
-        dest: '/var/lib/tftpboot/pxelinux.cfg/default'
+        src: "{{ pxeboot['name'] }}.j2"
+        dest: "/var/lib/tftpboot/{{ pxeboot['dest'] }}"
         owner: 'root'
         group: 'root'
         mode: '0644'
+      loop:
+        - name: 'pxelinux.cfg'
+          dest: 'pxelinux.cfg/default'
+        - name: 'grub.cfg'
+          dest: 'grub.cfg'
