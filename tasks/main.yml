@@ -133,6 +133,15 @@
     loop_var: 'blueprint'
   when: edge_image_builder_make_blueprints | bool
 
+- name: 'Copy kickstart file'
+  ansible.builtin.copy:
+    src: "/etc/osbuild-composer/blueprints/{{ blueprint }}.ks"
+    dest: "/var/www/html/{{ blueprint }}/install.ks"
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+    remote_src: true
+
 - name: 'Update PXEboot menu'
   ansible.builtin.template:
     src: "{{ pxeboot['name'] }}"
