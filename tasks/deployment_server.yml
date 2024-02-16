@@ -62,6 +62,6 @@
     enabled: true
   loop:
     - 'dhcpd'
-    - 'tftp'
+    - 'tftp.socket'
   loop_control:
     loop_var: 'service'
