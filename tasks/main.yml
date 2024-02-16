@@ -141,6 +141,9 @@
     group: 'root'
     mode: '0644'
     remote_src: true
+  loop: "{{ edge_image_builder_blueprints }}"
+  loop_control:
+    loop_var: 'blueprint'
 
 - name: 'Update PXEboot menu'
   ansible.builtin.template:
