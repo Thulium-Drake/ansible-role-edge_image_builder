@@ -1,0 +1,11 @@
+---
+edge_image_builder_config_repo:
+  - id: 'device-edge-config-rpms'
+    name: 'Device Edge Config RPMs'
+    type: 'yum-baseurl'
+    url: 'http://localhost/config-rpms'
+    distros:
+      - "{ edge_image_builder_distro_id }}"
+    check_gpg: false
+    check_ssl: false
+    rhsm: false

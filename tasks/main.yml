@@ -7,9 +7,10 @@
 - name: 'Ensure dependencies'
   ansible.builtin.package:
     name:
-      - 'osbuild-composer'
       - 'composer-cli'
+      - 'createrepo_c'
       - 'httpd'
+      - 'osbuild-composer'
     state: 'present'
   notify: 'Reboot system'
 
@@ -61,6 +62,7 @@
     - '/etc/osbuild-composer/blueprints'
     - '/etc/osbuild-worker'
     - '/var/lib/tftpboot/pxelinux.cfg'
+    - '/var/www/html/config-rpms'
   loop_control:
     loop_var: 'directory'
 
@@ -99,14 +101,14 @@
     owner: 'root'
     group: 'root'
     mode: '0644'
-  loop: "{{ edge_image_builder_repos }}"
+  loop: "{{ edge_image_builder_repos + edge_image_builder_config_repo }}"
   loop_control:
     loop_var: 'repo'
 
 - name: 'Import extra repo definitions'
   ansible.builtin.command: /usr/bin/composer-cli sources add /etc/osbuild-composer/repositories/{{ repo['id'] }}.toml
   changed_when: true  # The command does not tell you if anything has changed
-  loop: "{{ edge_image_builder_repos }}"
+  loop: "{{ edge_image_builder_repos + edge_image_builder_config_repo }}"
   loop_control:
     loop_var: 'repo'
 
@@ -159,3 +161,27 @@
       dest: 'grub.cfg'
   loop_control:
     loop_var: 'pxeboot'
+
+- name: 'List config RPMs'
+  ansible.builtin.find:
+    paths: '/etc/osbuild-composer/blueprints'
+    patterns: '*.rpm'
+  register: 'config_rpms'
+
+- name: 'Copy config RPMs'
+  ansible.builtin.copy:
+    src: "{{ config_rpm['path'] }}"
+    dest: '/var/www/html/config-rpms/'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+    remote_src: true
+  loop: "{{ config_rpms['files'] }}"
+  loop_control:
+    loop_var: 'config_rpm'
+
+- name: 'Update config RPM repository metadata'
+  ansible.builtin.command: /usr/bin/createrepo .
+  args:
+    chdir: '/var/www/html/config-rpms'
+  changed_when: true
