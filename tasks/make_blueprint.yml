@@ -7,6 +7,10 @@
     mode: '0700'
   changed_when: false  # The creation of this dir is not significant
 
+- name: 'Ensure old blueprint deleted from osbuild-composer'
+  ansible.builtin.command: /usr/bin/composer-cli blueprints delete {{ blueprint }}
+  changed_when: true  # Command does not tell you when something has changed
+
 - name: 'Import blueprint to osbuild-composer'
   ansible.builtin.command: /usr/bin/composer-cli blueprints push /etc/osbuild-composer/blueprints/{{ blueprint }}.toml
   changed_when: true  # Command does not tell you when something has changed
