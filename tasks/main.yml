@@ -10,7 +10,7 @@
       - 'composer-cli'
       - 'createrepo_c'
       - 'httpd'
-      - 'osbuild-composer'
+      - 'osbuild-composer'  # requires a reboot
       - 'ansible-core'
     state: 'present'
   notify: 'Reboot system'
