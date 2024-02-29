@@ -78,6 +78,7 @@
   ansible.builtin.get_url:
     url: "{{ edge_image_builder_bootiso_download }}"
     dest: '/var/cache/edge_image_builder/boot.iso'
+    force: false
     owner: 'root'
     group: 'root'
     mode: '0644'
