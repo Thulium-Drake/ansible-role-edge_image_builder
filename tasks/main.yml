@@ -55,18 +55,6 @@
   loop_control:
     loop_var: 'service'
 
-- name: 'Get distro ID'
-  ansible.builtin.shell: |
-    set -o pipefail
-    . /etc/os-release
-    echo $ID
-  register: 'edge_image_builder_distro_id_raw'
-  changed_when: false
-
-- name: 'Set fact for distro ID'
-  ansible.builtin.set_fact:
-    edge_image_builder_distro_id: "{{ edge_image_builder_distro_id_raw['stdout'] }}-{{ ansible_facts['distribution_major_version'] }}"
-
 - name: 'Ensure directories'
   ansible.builtin.file:
     path: "{{ directory }}"
@@ -104,12 +92,15 @@
 
 - name: 'Ensure default repository overrides'
   ansible.builtin.template:
-    src: "{{ edge_image_builder_distro_id }}.json.j2"
-    dest: "/etc/osbuild-composer/repositories/{{ edge_image_builder_distro_id }}.json"
+    src: "{{ distro_id }}.json.j2"
+    dest: "/etc/osbuild-composer/repositories/{{ distro_id }}.json"
     owner: 'root'
     group: 'root'
     mode: '0644'
   notify: 'Restart osbuild-composer'
+  loop: "{{ edge_image_builder_distros }}"
+  loop_control:
+    loop_var: 'distro_id'
 
 - name: 'Ensure extra repo definitions'
   ansible.builtin.template:

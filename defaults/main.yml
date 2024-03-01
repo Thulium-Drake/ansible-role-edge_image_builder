@@ -11,6 +11,13 @@ edge_image_builder_repo_baseurl: 'https://cdn.redhat.com'
 # For Red Hat OCP, get it at https://cloud.redhat.com/openshift/install/pull-secret
 edge_image_builder_pull_secret: ''
 
+# Which OS major releases to support in blueprints
+# Available templates:
+#   - rhel-8
+#   - rhel-9
+edge_image_builder_distros:
+  - 'rhel-9'
+
 # Extra repositories to add to osbuild-composer
 edge_image_builder_repos: []
 #  - id: 'example-repo'              # Name of the repo
@@ -18,7 +25,7 @@ edge_image_builder_repos: []
 #    type: 'yum-baseurl'             # yum-baseurl or yum-mirrorlist
 #    url: 'https://example.com/yum'  # Actual URL for repo
 #    distros:
-#      - 'rhel-9'  # You can also use {{ edge_image_builder_distro_id }}
+#      - 'rhel-9'
 #    check_gpg: true                 # Check GPG signatures for packages in repo
 #    check_ssl: true                 # Check if repo has valid SSL settings
 #    rhsm: false                     # True if the repo is hosted on a RHSM managed source
