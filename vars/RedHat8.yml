@@ -1,0 +1,3 @@
+---
+edge_image_builder_additional_dependencies:
+  - 'python36'

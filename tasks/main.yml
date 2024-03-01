@@ -1,4 +1,15 @@
 ---
+- name: 'Include OS specific vars'
+  ansible.builtin.include_vars: "{{ lookup('first_found', edge_image_builder_vars) }}"
+  vars:
+    edge_image_builder_vars:
+      files:
+        - "{{ ansible_facts['os_family'] }}{{ ansible_facts['distribution_major_version'] }}.yml"
+        - "{{ ansible_facts['os_family'] }}.yml"
+      paths:
+        - 'vars'
+  no_log: true
+
 - name: 'Assert supported system'
   ansible.builtin.assert:
     that:
@@ -14,6 +25,11 @@
       - 'ansible-core'
     state: 'present'
   notify: 'Reboot system'
+
+- name: 'Ensure additional dependencies'
+  ansible.builtin.package:
+    name: "{{ edge_image_builder_additional_dependencies }}"
+    state: 'present'
 
 - name: 'Ensure firewall ports'
   ansible.posix.firewalld:
