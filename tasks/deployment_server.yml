@@ -74,27 +74,44 @@
   loop_control:
     loop_var: 'uefi_bootloader'
 
-- name: 'Download Boot ISO'
+- name: 'Download Boot ISOs for distributions'
   ansible.builtin.get_url:
-    url: "{{ edge_image_builder_bootiso_download }}"
-    dest: '/var/cache/edge_image_builder/boot.iso'
+    url: "{{ distro['bootiso_url'] }}"
+    dest: "/var/cache/edge_image_builder/boot-{{ distro['id'] }}.iso"
     force: false
     owner: 'root'
     group: 'root'
     mode: '0644'
+  loop: "{{ edge_image_builder_deployment_distros }}"
+  loop_control:
+    loop_var: 'distro'
 
-- name: 'Extract TFTP boot images from ISO'
+- name: 'Ensure TFTP directories'
+  ansible.builtin.file:
+    path: "/var/lib/tftpboot/{{ distro['id'] }}"
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+  loop: "{{ edge_image_builder_deployment_distros }}"
+  loop_control:
+    loop_var: 'distro'
+
+- name: 'Extract TFTP boot images from ISOs'
   community.general.iso_extract:
-    image: '/var/cache/edge_image_builder/boot.iso'
-    dest: '/var/lib/tftpboot'
+    image: "/var/cache/edge_image_builder/boot-{{ distro['id'] }}.iso"
+    dest: "/var/lib/tftpboot/{{ distro['id'] }}"
     files:
       - 'images/pxeboot/initrd.img'
       - 'images/pxeboot/vmlinuz'
+  loop: "{{ edge_image_builder_deployment_distros }}"
+  loop_control:
+    loop_var: 'distro'
 
-- name: 'Extract liveboot image from ISO'
+- name: 'Extract liveboot image from ISOs'
   community.general.iso_extract:
-    image: '/var/cache/edge_image_builder/boot.iso'
-    dest: '/var/www/html'
+    image: "/var/cache/edge_image_builder/boot-{{ distro['id'] }}.iso"
+    dest: "/var/www/html/install-{{ distro['id'] }}.img"
     files:
       - 'images/install.img'
 
