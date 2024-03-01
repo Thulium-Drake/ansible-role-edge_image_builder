@@ -114,6 +114,8 @@
     dest: "/var/www/html/install-{{ distro['id'] }}.img"
     files:
       - 'images/install.img'
+  loop_control:
+    loop_var: 'distro'
 
 - name: 'Ensure services'
   ansible.builtin.service:
