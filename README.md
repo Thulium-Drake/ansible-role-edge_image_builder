@@ -26,3 +26,6 @@ This role can be configured to build and publish all blueprints found in ''/etc/
 If these files are both present, the role will import the blueprint to osbuild-composer, build the image and publish the artifacts in ''/var/www/html/<image>'', after which is can be deployed to target systems.
 
 It will also generate a PXEboot menu for the images it has built, if you do not configure the role to process blueprints, it will not generate a menu.
+
+## Distro versions
+The image builder is capable of building multiple versions of the Device Edge OS, but when running Satellite, you must ensure that the server has acccess to the repositories required for it.
