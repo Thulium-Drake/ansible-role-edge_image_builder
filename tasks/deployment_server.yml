@@ -108,12 +108,24 @@
   loop_control:
     loop_var: 'distro'
 
+- name: 'Ensure webserver directories'
+  ansible.builtin.file:
+    path: "/var/www/html/{{ distro['id'] }}"
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+  loop: "{{ edge_image_builder_deployment_distros }}"
+  loop_control:
+    loop_var: 'distro'
+
 - name: 'Extract liveboot image from ISOs'
   community.general.iso_extract:
     image: "/var/cache/edge_image_builder/boot-{{ distro['id'] }}.iso"
-    dest: "/var/www/html/install-{{ distro['id'] }}.img"
+    dest: "/var/www/html/{{ distro['id'] }}"
     files:
       - 'images/install.img'
+  loop: "{{ edge_image_builder_deployment_distros }}"
   loop_control:
     loop_var: 'distro'
 
