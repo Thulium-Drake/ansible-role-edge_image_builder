@@ -8,6 +8,7 @@ After running this role you have a system that can manage ostree images. You wil
 
 Further documentation on how to work with Device Edge can be found here: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/composing_installing_and_managing_rhel_for_edge_images/introducing-rhel-for-edge-images_composing-installing-managing-rhel-for-edge-images
 
+NOTE: This role only implements the 'toolchain' required for managing Device Edge images, building the images themselves is managed in the 'edge_compose_blueprint' role.
 
 ## Deployment server
 This role can be configured to configure a simple DHCP/TFTP deployment setup that will allow for PXEbooting target systems. This deployment setup will:
