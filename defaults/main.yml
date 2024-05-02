@@ -16,7 +16,12 @@ edge_image_builder_pull_secret: ''
 #   - rhel-8
 #   - rhel-9
 edge_image_builder_distros:
-  - 'rhel-9'
+  - id: 'rhel-9'
+    bootiso_url: 'https://mirror.example.nl/rhel-93-boot.iso'
+    bootiso_username: 'redhat'
+    bootiso_password: 'my_first_password'
+  - id: 'fedora'
+    bootiso_url: 'https://download.fedoraproject.org/pub/fedora/linux/releases/39/Server/x86_64/iso/Fedora-Server-netinst-x86_64-39-1.5.iso'
 
 # Extra repositories to add to osbuild-composer
 edge_image_builder_repos: []
@@ -46,10 +51,3 @@ edge_image_builder_nameservers: '8.8.8.8'
 edge_image_builder_subnet: '192.168.1.0/24'
 edge_image_builder_router: '192.168.1.1'
 edge_image_builder_server_ip: '192.168.1.10'
-
-# Define which distros you want to be able to deploy with the deployment server
-# This is in case you want to deploy for example RHEL8 and RHEL9 based Edge devices
-# It's required to use the distro IDs used in OSBuild (rhel-8, rhel-9, etc.)
-edge_image_builder_deployment_distros:
-  - id: 'fedora'
-    bootiso_url: 'https://download.fedoraproject.org/pub/fedora/linux/releases/39/Server/x86_64/iso/Fedora-Server-netinst-x86_64-39-1.5.iso'

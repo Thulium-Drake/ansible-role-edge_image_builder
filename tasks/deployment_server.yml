@@ -7,13 +7,6 @@
       - 'syslinux'
     state: 'present'
 
-- name: 'Ensure cache directory'
-  ansible.builtin.file:
-    path: '/var/cache/edge_image_builder'
-    state: 'directory'
-    group: 'root'
-    mode: '0700'
-
 - name: 'Download extra bootloader RPM files'  # The dnf module does not download anything if it's already installed
   ansible.builtin.shell: |
     set -o pipefail
@@ -74,18 +67,6 @@
   loop_control:
     loop_var: 'uefi_bootloader'
 
-- name: 'Download Boot ISOs for distributions'
-  ansible.builtin.get_url:
-    url: "{{ distro['bootiso_url'] }}"
-    dest: "/var/cache/edge_image_builder/boot-{{ distro['id'] }}.iso"
-    force: false
-    owner: 'root'
-    group: 'root'
-    mode: '0644'
-  loop: "{{ edge_image_builder_deployment_distros }}"
-  loop_control:
-    loop_var: 'distro'
-
 - name: 'Ensure TFTP directories'
   ansible.builtin.file:
     path: "/var/lib/tftpboot/{{ distro['id'] }}"
@@ -93,7 +74,7 @@
     owner: 'root'
     group: 'root'
     mode: '0755'
-  loop: "{{ edge_image_builder_deployment_distros }}"
+  loop: "{{ edge_image_builder_distros }}"
   loop_control:
     loop_var: 'distro'
 
@@ -104,28 +85,7 @@
     files:
       - 'images/pxeboot/initrd.img'
       - 'images/pxeboot/vmlinuz'
-  loop: "{{ edge_image_builder_deployment_distros }}"
-  loop_control:
-    loop_var: 'distro'
-
-- name: 'Ensure webserver directories'
-  ansible.builtin.file:
-    path: "/var/www/html/{{ distro['id'] }}"
-    state: 'directory'
-    owner: 'root'
-    group: 'root'
-    mode: '0755'
-  loop: "{{ edge_image_builder_deployment_distros }}"
-  loop_control:
-    loop_var: 'distro'
-
-- name: 'Extract liveboot image from ISOs'
-  community.general.iso_extract:
-    image: "/var/cache/edge_image_builder/boot-{{ distro['id'] }}.iso"
-    dest: "/var/www/html/{{ distro['id'] }}"
-    files:
-      - 'images/install.img'
-  loop: "{{ edge_image_builder_deployment_distros }}"
+  loop: "{{ edge_image_builder_distros }}"
   loop_control:
     loop_var: 'distro'
 
