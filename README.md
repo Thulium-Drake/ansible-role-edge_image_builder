@@ -18,6 +18,8 @@ This role can be configured to configure a simple DHCP/TFTP deployment setup tha
 
 Please see defaults/main.yml for more details which can be configured for the deployment server. Note that this role will not configure a PXEboot menu if no blueprints are built with it.
 
+A more extended deployment server that uses iPXE as it's netboot mechanism can be configured with the https://github.com/Thulium-Drake/ansible_role-netboot_server role
+
 ## Building images
 This role can be configured to build and publish all blueprints found in ''/etc/osbuild-composer/blueprints''. For this mechanism to work you need to place the following files:
 
