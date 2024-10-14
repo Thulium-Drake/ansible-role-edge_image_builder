@@ -31,19 +31,6 @@
     name: "{{ edge_image_builder_additional_dependencies }}"
     state: 'present'
 
-- name: 'Ensure firewall ports'
-  ansible.posix.firewalld:
-    service: "{{ firewall_service }}"
-    permanent: true
-    immediate: true
-    state: 'enabled'
-  loop:
-    - 'dhcp'
-    - 'tftp'
-    - 'http'
-  loop_control:
-    loop_var: 'firewall_service'
-
 - name: 'Ensure services'
   ansible.builtin.service:
     name: "{{ service }}"
