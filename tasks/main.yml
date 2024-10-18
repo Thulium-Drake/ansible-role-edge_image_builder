@@ -55,6 +55,7 @@
     - '/etc/osbuild-worker'
     - '/var/lib/tftpboot/pxelinux.cfg'
     - '/var/www/html/config-rpms'
+    - '/var/www/html/tools-rpms'
     - '/var/cache/edge_image_builder'
   loop_control:
     loop_var: 'directory'

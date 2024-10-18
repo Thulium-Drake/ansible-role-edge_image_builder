@@ -9,3 +9,12 @@ edge_image_builder_config_repo:
     check_gpg: false
     check_ssl: false
     rhsm: false
+  - id: 'device-edge-tools-rpms'
+    name: 'Device Edge Tools RPMs'
+    type: 'yum-baseurl'
+    url: 'http://localhost/tools-rpms'
+    distros:
+      - "{ edge_image_builder_distro_id }}"
+    check_gpg: false
+    check_ssl: false
+    rhsm: false
