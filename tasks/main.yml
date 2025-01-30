@@ -15,6 +15,10 @@
     that:
       - ansible_facts['os_family'] == 'RedHat'
 
+- name: 'Get distro-id'
+  ansible.builtin.set_fact:
+    edge_image_builder_distro_id: "{{ edge_image_builder_distro_ids[ansible_facts['distribution']] }}-{{ ansible_facts['distribution_major_version'] }}"
+
 - name: 'Ensure dependencies'
   ansible.builtin.package:
     name:
@@ -98,6 +102,7 @@
     owner: 'root'
     group: 'root'
     mode: '0644'
+  when: "edge_image_builder_distro_id in repo['distros']"
   loop: "{{ edge_image_builder_repos + edge_image_builder_config_repo }}"
   loop_control:
     loop_var: 'repo'
@@ -105,6 +110,7 @@
 - name: 'Import extra repo definitions'
   ansible.builtin.command: /usr/bin/composer-cli sources add /etc/osbuild-composer/repositories/{{ repo['id'] }}.toml
   changed_when: true  # The command does not tell you if anything has changed
+  when: "edge_image_builder_distro_id in repo['distros']"
   loop: "{{ edge_image_builder_repos + edge_image_builder_config_repo }}"
   loop_control:
     loop_var: 'repo'

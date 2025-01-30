@@ -1,11 +1,15 @@
 ---
+# Map distribution names to distro IDs used in osbuild-composer
+edge_image_builder_distro_ids:
+  RedHat: 'rhel'
+
 edge_image_builder_config_repo:
   - id: 'device-edge-config-rpms'
     name: 'Device Edge Config RPMs'
     type: 'yum-baseurl'
     url: 'http://localhost/config-rpms'
     distros:
-      - "{ edge_image_builder_distro_id }}"
+      - "{{ edge_image_builder_distro_id }}"
     check_gpg: false
     check_ssl: false
     rhsm: false
@@ -14,7 +18,7 @@ edge_image_builder_config_repo:
     type: 'yum-baseurl'
     url: 'http://localhost/tools-rpms'
     distros:
-      - "{ edge_image_builder_distro_id }}"
+      - "{{ edge_image_builder_distro_id }}"
     check_gpg: false
     check_ssl: false
     rhsm: false
